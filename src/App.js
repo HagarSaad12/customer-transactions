@@ -26,10 +26,19 @@ function App() {
     <>
       {customersState.length > 0
         ? customersState.map((item, idx) => (
-            <div>
-              <h1>idx:{idx} - {item.name}</h1>
+            <div key={idx}>
+              <h1>
+                id:{idx + 1} - {item.name}
+              </h1>
               {transactionsState.map((trans) =>
-                trans.customer_id === idx+1 ? <h2>trans custom: {trans.customer_id} - {trans.date}</h2> : null
+                trans.customer_id === idx + 1 ? (
+                  <div>
+                    <h2>
+                      trans custom: {trans.customer_id} - {trans.date}
+                    </h2>
+                    amoutn: {trans.amount}
+                  </div>
+                ) : null
               )}
             </div>
           ))
