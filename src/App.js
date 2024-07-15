@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
+
+  const [customersState,setCustomersState] = useState([])
+  const [transactionsState,setTransactionsData] = useState([])
+  // const [temp,setTemp]=useState(null)
+  // data fetching
+  const fetchingData = async()=>{
+    const [customersData, transactionsData] = await Promise.all([
+      axios.get("http://localhost:3000/customers"),
+      axios.get("http://localhost:3000/transactions"),
+    ]);
+    if(customersData.status===200){
+      console.log("response is complste")
+      setCustomersState(customersData.data)
+      setTransactionsData(transactionsData.data);
+    }
+  }
+  useEffect(()=>{
+    fetchingData()
+  },[])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {customersState.length > 0
+        ? customersState.map((item, idx) => (
+            <div key={idx}>
+              <h1>
+                id:{idx + 1} - {item.name}
+              </h1>
+              {transactionsState.map((trans) =>
+                trans.customer_id === idx + 1 ? (
+                  <div>
+                    <h2>
+                      trans custom: {trans.customer_id} - {trans.date}
+                    </h2>
+                    amoutn: {trans.amount}
+                  </div>
+                ) : null
+              )}
+            </div>
+          ))
+        : "loaindg"}
+    </>
   );
 }
 
